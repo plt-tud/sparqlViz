@@ -29,7 +29,7 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
 
             query.isActive = true;
             $scope.selectedQuery = query;
-            parseQueryService.parse(query.query)
+            parseQueryService.parse(query.query);
             console.log($scope.queries);
         }
     };
@@ -39,7 +39,7 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
         if (newVal && $scope.selectedQuery==null) {
             $scope.selectQuery(newVal[0]);
         }
-    }
+    });
 
     $scope.$watch("parseQueryService.getObject()", function(newQuery: sparql.Query)
     {
