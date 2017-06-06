@@ -1,5 +1,5 @@
-/// <reference path="../jquery/jquery.d.ts" />
-/// <reference path="../angular/angular.d.ts" />
+/// <reference path="../../node_modules/@types/jquery/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
 /// <reference path="d3-angular.d.ts" />
 
 angular.module("sparqlJs").directive("node", function() {

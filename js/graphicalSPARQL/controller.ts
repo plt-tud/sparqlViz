@@ -1,10 +1,14 @@
-/// <reference path="../d3/d3.d.ts" />
-/// <reference path="../jquery/jquery.d.ts" />
-/// <reference path="../angular/angular.d.ts" />
-/// <reference path="d3-angular.d.ts" />
+/// <reference path="../../node_modules/@types/jquery/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../node_modules/@types/d3/index.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
 
-angular.module("sparqlJs").controller("graphController", function($scope: graphControllerScope, highlightingService, dragNodeService, parseQueryService, $location, sparqlProxyService, $interval) {
+
+angular.module('sparqlJs').controller('settingsController', function ($scope, $location, config) {
+    $scope.config = config;
+    $scope.$location = $location;
+});
+angular.module("sparqlJs").controller("graphController", function($scope: graphControllerScope, socket, highlightingService, dragNodeService, parseQueryService, $location, sparqlProxyService) {
     $scope.nodes = [];
     $scope.edges = [];
     $scope.subGraphs = [];
@@ -14,11 +18,15 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
     $scope.orders = [];
     $scope.services = [];
     $scope.limit = Infinity;
-    $scope.queries = sparqlProxyService;
+    $scope.queries = sparqlProxyService.sparqlRequests;
     $scope.selectedQuery = null;
 
-    //var stop = $interval(sparqlProxyService.update, 3000);
-
+    socket.on('request', function (data) {
+        console.log("Message", data);
+        $scope.queries.push(data);
+        if ($scope.queries.length>20)
+            $scope.queries.shift();
+    });
 
     $scope.selectQuery = function(query){
         console.log("Select Query", query);
@@ -35,9 +43,12 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
     };
 
     sparqlProxyService.update();
-    $scope.$watch("queries.sparqlRequests", function(newVal, oldVal, scope){
+
+    $scope.$watch("queries[0]", function(newVal, oldVal, scope){
+        console.log("hit")
         if (newVal && $scope.selectedQuery==null) {
-            $scope.selectQuery(newVal[0]);
+            console.log("new", newVal)
+            $scope.selectQuery(newVal);
         }
     });
 
@@ -111,15 +122,13 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
         $scope.graphSize.width = 700;
 
         var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(50)
             .size([$scope.graphSize.width, $scope.graphSize.height]);
 
         force.nodes($scope.nodes)
             .links($scope.edges)
             .linkDistance(200)
             .linkStrength(1)
-            .charge(-5e3)
+            .charge(30)
             .gravity(0.5)
             .start();
 
@@ -161,6 +170,6 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
     $scope.dragNodeService = dragNodeService;
     $scope.parseQueryService = parseQueryService;
     $scope.$location = $location;
-}).controller('legendController', ['$scope', function($scope) {
-
+}).controller('legendController', ['$scope', function($scope, $location) {
+    $scope.$location = $location;
 }]);

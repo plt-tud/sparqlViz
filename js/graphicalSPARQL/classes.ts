@@ -134,6 +134,10 @@ module sparql {
          */
         private interjectionPoint: [number, number, number, number] = [0, 0, 0, 0];
         /**
+         * size of the edge
+         */
+        size: number;
+        /**
          * the source-id in the node-list
          * this is used by d3
          */
@@ -683,7 +687,7 @@ module sparql {
         addUnion(union: Union): this {
             for(var u in this.unionList)
             {
-                if(u === union)
+                if(u === union.toString())
                 {
                     return this;
                 }

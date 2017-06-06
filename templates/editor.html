@@ -10,16 +10,12 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="index.html">SPARQL Visualiser by PLT</a>
-            <button class="btn btn-default" data-ng-click="$location.url('/legend')" style="margin-top: 10px;">Show
-                legend
-            </button>
-            <button class="btn btn-default pull-left" data-ng-click="queries.update()" style="margin-top: 10px;">
-                Update
-            </button>
+
+            <button class="btn btn-default" data-ng-click="$location.url('/legend')" style="margin-top: 10px;">Show legend</button>
+            <button class="btn btn-default" data-ng-click="$location.url('/settings')" style="margin-top: 10px;">Settings</button>
         </div>
         <!-- /.navbar-header -->
     </div>
-
 <div class="row">
     <div class="col-sm-5">
         <h2>Last Queries</h2>
@@ -32,7 +28,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="request in queries.sparqlRequests | orderBy:'-'" data-ng-click="selectQuery(request)" ng-class="{ active: request.isActive}">
+            <tr ng-repeat="request in queries | orderBy:'-'" data-ng-click="selectQuery(request)" ng-class="{ active: request.isActive}">
                 <td><span class="label label-default">{{request.method}}</span> {{request.query | limitTo: 50 }} ...
                 </td>
                 <td><em>{{request.time | date:'yyyy-MM-dd HH:mm:ss'}}</em></td>

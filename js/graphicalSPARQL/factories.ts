@@ -1,8 +1,42 @@
-/// <reference path="../jquery/jquery.d.ts" />
-/// <reference path="../angular/angular.d.ts" />
-/// <reference path="../d3/d3.d.ts" />
-/// <reference path="d3-angular.d.ts" />
+/// <reference path="../../node_modules/@types/jquery/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../node_modules/@types/d3/index.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
+
+angular.module('sparqlJs').factory("config", function($localStorage, $location) {
+
+    return $localStorage.$default({
+        sparqlLogProxyUrl: $location.protocol() + "://" + $location.host() + ":5060/queries"
+    });
+
+});
+
+
+// https://www.html5rocks.com/en/tutorials/frameworks/angular-websockets/
+angular.module('sparqlJs').factory('socket', function ($rootScope, config) {
+    var socket = io(config.sparqlLogProxyUrl);
+    return {
+        on: function (eventName, callback) {
+            socket.on(eventName, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        emit: function (eventName, data, callback) {
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            })
+        }
+    };
+});
+
 
 angular.module("sparqlJs").factory('highlightingService', [function()
 {

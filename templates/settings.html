@@ -1,0 +1,30 @@
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="index.html">SPARQL Visualiser</a>
+  </div>
+  <!-- /.navbar-header -->
+
+  <!-- /.navbar-static-side -->
+</nav>
+<div class="container">
+  <div class="row">
+  <h1>Settings</h1>
+  </div>
+  <form>
+<div class="row">
+<label>SparqlLogProxy Url</label> <input type="url" ng-model="config.sparqlLogProxyUrl">
+</div>
+  <div class="row">
+  <button class="btn btn-default"  data-ng-click="$location.url('/')" >Back to Queries</button>
+  </div>
+  </form>
+</div>
+
+

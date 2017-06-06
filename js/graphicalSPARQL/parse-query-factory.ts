@@ -1,8 +1,8 @@
-/// <reference path="../jquery/jquery.d.ts" />
-/// <reference path="../angular/angular.d.ts" />
-/// <reference path="../d3/d3.d.ts" />
-/// <reference path="d3-angular.d.ts" />
-/// <reference path="../sparql-js/sparqljs.d.ts" />
+/// <reference path="../../node_modules/@types/jquery/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../node_modules/@types/d3/index.d.ts" />
+/// <reference path="../graphicalSPARQL/classes.ts" />
+
 
 angular.module("sparqlJs").factory('parseQueryService', [function()
 {

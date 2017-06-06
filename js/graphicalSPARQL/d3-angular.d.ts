@@ -1,4 +1,4 @@
-/// <reference path="../angular/angular.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
 
 interface graphControllerScope extends angular.IScope {
