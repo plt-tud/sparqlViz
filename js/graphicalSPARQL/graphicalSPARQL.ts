@@ -1,4 +1,4 @@
-module GraphicalSpraql {
+module GraphicalSparql {
     /**
      * Hauptklasse
      * ist für das binding an die Umgebung gedacht
