@@ -1,0 +1,250 @@
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">SPARQL Visualiser</a>
+    </div>
+    <!-- /.navbar-header -->
+
+    <!-- /.navbar-static-side -->
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Legend</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Colored Arrows</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <p>
+                        Colored Arrows indicate triples used in this query. The colors encode different parts of the query, that this triple showed up.
+                    </p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 75px;">
+                                    <svg width="50px" height="10px">
+                                        <g class="edge">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    Regular triple with no special meaning. It was part of the <strong>WHERE</strong>-clause
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="50px" height="10px">
+                                        <g class="edge insert">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This triple was <strong>inserted</strong> with this query
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="50px" height="10px">
+                                        <g class="edge delete">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This triple was <strong>deleted</strong> with this query
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="50px" height="10px">
+                                        <g class="edge minus">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This triple is part of a <strong>MINUS</strong>-statement
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="50px" height="10px">
+                                        <g class="edge construct">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This triple is part of a <strong>CONSTRUCT</strong>-statement
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="50px" height="10px">
+                                        <g class="edge optional">
+                                            <path d="M0 5 L50 5"></path>
+                                            <g transform="translate(50, 5)">
+                                                <polygon points="0,0,12,5,12,-5" transform="rotate(180)" class="arrow-top"></polygon>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This triple is part of an <strong>OPTIONAL</strong>-statement
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Ellipses</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <p>
+                        Ellipses indicate Subjects and Predicates of a query.<br>
+                        Ellipses can be dragged around with the mouse.
+                    </p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 75px;">
+                                    <svg width="50px" height="30px">
+                                        <g class="node">
+                                            <ellipse rx="24" ry="14" cx="25" cy="15"></ellipse>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    Regular subject/predicate with no special meaning.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 75px;">
+                                    <svg width="50px" height="30px">
+                                        <g class="node select">
+                                            <ellipse rx="24" ry="14" cx="25" cy="15"></ellipse>
+                                        </g>
+                                    </svg>
+                                </td>
+                                <td>
+                                    This subject/predicate was part of a <strong>SELECT</strong>-statement.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Symbols</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <p>
+                        Symbols in the graph represent different special statements of the query that a subject/object was part of.
+                        By hovering the icon, you can see all subjects, predicates and objects that were part of this statement.<br>
+                        Please note that the symbols are only shown, when at least one subject/object were part of the statement.
+                        If only predicates were part of a statement, you can highlight them by hovering the statement in the sidebar.
+                    </p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 75px;">
+                                    <svg width="26px" height="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <image height="24" xlink:href="./img/glyphicons/glyphicons-692-tree-structure.png" width="26"></image>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <strong>GRAPH</strong>-statement.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="26px" height="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <image height="24" xlink:href="./img/glyphicons/glyphicons-321-filter.png" width="20"></image>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <strong>FILTER</strong>-statement.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="26px" height="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <image height="24" xlink:href="./img/glyphicons/glyphicons-51-link.png" width="20"></image>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <strong>BIND</strong>-statement.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="26px" height="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <image height="23" xlink:href="./img/glyphicons/glyphicons-404-sorting.png" width="24"></image>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <strong>ORDER</strong>-statement.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <image height="26" xlink:href="./img/glyphicons/glyphicons-197-exclamation-sign.png" width="26"></image>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <strong>SERVICE</strong>-statement.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+            <a class="btn btn-default" href="/#/"><i></i> Back to Queries</a>
+        <!-- /.col-lg-8 -->
+        <!-- /.row -->
+    </div>
+</div>
+
+<!-- /#page-wrapper -->
+</div>
+<!-- /#wrapper -->

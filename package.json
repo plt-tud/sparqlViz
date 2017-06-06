@@ -1,0 +1,11 @@
+{
+  "name": "sparqlViz",
+  "version": "0.0.1",
+  "scripts": {
+    "dist": "node_modules/.bin/uglifyjs js/sparql-js/sparqljs-browser.js js/graphicalSPARQL/classes.js js/graphicalSPARQL/app.js js/graphicalSPARQL/directives.js js/graphicalSPARQL/factories.js js/graphicalSPARQL/parse-query-factory.js js/graphicalSPARQL/sparqlProxyService.js js/graphicalSPARQL/controller.js -o js/graphical-sparql.min.js",
+    "dist2": "node_modules/.bin/uglifyjs js/sparql-js/sparqljs-browser.js js/graphicalSPARQL/classes.js js/graphicalSPARQL/app.js js/graphicalSPARQL/directives.js js/graphicalSPARQL/factories.js js/graphicalSPARQL/parse-query-factory.js js/graphicalSPARQL/controller.js -o js/graphical-sparql.min.js"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.0.11"
+  }
+}

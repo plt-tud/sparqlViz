@@ -1,0 +1,51 @@
+
+.node {
+  cursor: pointer; }
+  .node ellipse {
+    stroke: #000;
+    stroke-width: 1px;
+    fill: #FFF; }
+  .node.select ellipse {
+    fill: #AAA; }
+
+text {
+  font-size: 12px; }
+
+.edge path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px; }
+.edge.insert path {
+  stroke: blue; }
+.edge.insert .arrow-top {
+  fill: blue; }
+.edge.minus path {
+  stroke: green; }
+.edge.minus .arrow-top {
+  fill: green; }
+.edge.delete path {
+  stroke: red; }
+.edge.delete .arrow-top {
+  fill: red; }
+.edge.construct path {
+  stroke: #0099FF; }
+.edge.construct .arrow-top {
+  fill: #0099FF; }
+.edge.optional path {
+  stroke-dasharray: 5 10; }
+
+rect {
+  fill: #FFF; }
+
+polygon.arrow-top {
+  fill: #000; }
+
+.sub-graph text {
+  display: none; }
+
+.unhighlighted:not(.node), .unhighlighted.node text {
+  opacity: 0.3; }
+.unhighlighted.node ellipse {
+  stroke: rgba(0, 0, 0, 0.3); }
+
+/*# sourceMappingURL=svg.css.map */

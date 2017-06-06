@@ -1,0 +1,68 @@
+
+.node {
+  cursor: pointer;
+
+  ellipse {
+    stroke: #000;
+    stroke-width: 1px;
+    fill: #FFF;
+  }
+
+  &.select ellipse {
+    fill: #AAA;
+  }
+}
+
+text {
+  font-size: 12px;
+}
+
+.edge {
+  path {
+    fill: none;
+    stroke: #000;
+    stroke-width: 2px;
+  }
+
+  @each $type, $color in (insert, blue), (minus, green), (delete, red), (construct, #0099FF) {
+    &.#{$type} {
+      path {
+        stroke: $color;
+      }
+
+      .arrow-top {
+        fill: $color
+      }
+    }
+  }
+
+  &.optional path {
+    stroke-dasharray: 5 10;
+  }
+}
+
+rect {
+  fill: #FFF;
+}
+
+polygon.arrow-top {
+  fill: #000;
+}
+
+.sub-graph {
+  text {
+    display: none;
+  }
+}
+
+.unhighlighted {
+  &:not(.node), &.node text{
+    opacity: 0.3;
+  }
+
+  &.node {
+    ellipse {
+      stroke: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
