@@ -351,12 +351,12 @@ module sparql {
         }
 
         updateCenterPoint(): void {
-            var x = this.startNode.getX(), y = this.startNode.getY();
-            var dx = this.endNode.getX() - x, dy = this.endNode.getY() - y;
+            let x = this.startNode.getX(), y = this.startNode.getY();
+            const dx = this.endNode.getX() - x, dy = this.endNode.getY() - y;
 
-            var distanceFromCenter = this.edgeType * BEZIER_DISTANCE;
+            const distanceFromCenter = this.edgeType * BEZIER_DISTANCE;
 
-            var distanceBetweenStartAndEnd = Math.sqrt(dx * dx + dy * dy);
+            const distanceBetweenStartAndEnd = Math.sqrt(dx * dx + dy * dy);
 
             x += dx / 2 + distanceFromCenter * dy / distanceBetweenStartAndEnd;
             y += dy / 2 - distanceFromCenter * dx / distanceBetweenStartAndEnd;
@@ -378,22 +378,22 @@ module sparql {
             y1 -= this.endNode.getY();
 
             // The end point of the quadratic bezier-curve
-            var x2 = this.startNode.getX() - this.endNode.getX(),
+            const x2 = this.startNode.getX() - this.endNode.getX(),
                 y2 = this.startNode.getY() - this.endNode.getY();
 
             // get the ellipse-parameters of the end-point
-            var a = this.endNode.getEllipseParameterX(),
+            const a = this.endNode.getEllipseParameterX(),
                 b = this.endNode.getEllipseParameterY();
 
             // we will need these calculations more often, so we store the result
-            var aSquared = a * a,
+            const aSquared = a * a,
                 bSquared = b * b,
                 x2Minus2x1 = x2 - 2 * x1,
                 y2Minus2y1 = y2 - 2 * y1;
 
             // initial value is solution for distanceFromCenter = 0 (see function getCenterPoint)
             // this equals this.type == GraphEdgeType.LINEAR
-            var t_n = a * b / Math.sqrt(x2 * x2 * bSquared + y2 * y2 * aSquared);
+            let t_n = a * b / Math.sqrt(x2 * x2 * bSquared + y2 * y2 * aSquared);
 
             // for a given bezier-curve we can calculate the curve as a function of t
             var x_t = function(t) {
