@@ -32,3 +32,6 @@ js/graphicalSPARQL/*.js
 /sparqlj-browser.js
 /js/lib.js
 /js/app.js
+.idea/
+dist/
+sparqlViz-0.0.1.tgz
