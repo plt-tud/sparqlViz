@@ -4,8 +4,20 @@ var browserSync = require('browser-sync');
 var less = require('gulp-less');
 var concat = require('gulp-concat');
 var browserify = require('gulp-browserify');
+var gulpCopy = require('gulp-copy');
+
+
+
+
 
 var paths = {
+    static: [
+        "index.html",
+        "templates/**",
+        "img/**",
+        "fonts/**",
+        "css/**"
+    ],
     appJS: [
         "js/graphicalSPARQL/*.ts"
     ],
@@ -20,46 +32,38 @@ var paths = {
     ]
 };
 
-gulp.task('browserify-sparqljs', function() {
-    gulp.src('node_modules/sparqljs/sparql.js')
-        .pipe(browserify({
-            insertGlobals : true
-        }))
-        .pipe(gulp.dest('node_modules/sparqljs/'));
+
+gulp.task('static', function() {
+    return gulp
+        .src(paths.static)
+        .pipe(gulpCopy("dist"));
 });
 
-gulp.task('ts', function() {
-    return gulp.src(['./src/**/*.ts', 'typings/browser.d.ts'])
-        .pipe(typescript({
-            out: 'charting.js'
-        }))
-        .pipe(gulp.dest('./dist'));
-});
 
 gulp.task('appJS', function() {
     return gulp.src(paths.appJS)
         .pipe(typescript({
             out: 'app.js'
         }))
-        .pipe(gulp.dest('./js'));
+        .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('libJS', function() {
     return gulp.src(paths.libJS)
         .pipe(concat('lib.js'))
-        .pipe(gulp.dest('./js'))
+        .pipe(gulp.dest('dist/js'))
 });
 
 gulp.task('less', function() {
-    return gulp.src('./src/**/*.less')
+    return gulp.src('./**/*.less')
         .pipe(less({
 
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('watch-less', function() {
-    gulp.watch(['./src/**/*.less'], ['less']);
+    gulp.watch(['./**/*.less'], ['less']);
 });
 
 gulp.task('watch-appjs', function() {
@@ -70,19 +74,18 @@ gulp.task('watch-appjs', function() {
 
 gulp.task('browserSync', function() {
     browserSync.init({
-        server: './',
+        server: 'dist/',
         index: './index.html',
-        port: 3030,
-        files: ['*.*']
+        port: 3030
     });
 });
 
 
-gulp.task('watch', ['dist', 'watch-appjs', 'watch-less', 'browserSync'], function() {
+gulp.task('watch', ['dist', 'watch-appjs', 'browserSync'], function() {
 
 });
 
-gulp.task('dist', ['appJS', 'less', 'libJS'], function() {
+gulp.task('dist', ['appJS', 'libJS', 'static'], function() {
 
 });
 
