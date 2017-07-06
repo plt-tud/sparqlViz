@@ -1,71 +1,39 @@
 /// <reference path="../../node_modules/@types/jquery/index.d.ts" />
 /// <reference path="../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="d3-angular.d.ts" />
 
 angular.module("sparqlJs").directive("node", function() {
     return {
-        'restrict': 'A',
-        'scope': {
-            'node': '='
+        restrict: 'A',
+        scope: {
+            'node': '=',
+            'highlight': '='
         },
-        'link': function(scope: repeatingNodeScope, element: JQuery) {
+        templateUrl: 'templates/node.html',
+        link: function(scope, element: JQuery) {
             var textElement = element.find('text')[0];
-
-            var size = {
-                x: 0,
-                y: 0
-            };
-
-            scope.$watch(function() {
+            scope.$watch('node.name', function(newSize, oldSize, scope) {
                 var boundingRect = textElement.getBoundingClientRect();
-
-                var w = Math.round(boundingRect.width),
-                    h = Math.round(boundingRect.height);
-
-                if(size.x !== w || size.y !== h) {
-                    size = {
-                        x: w,
-                        y: h
-                    };
-                }
-
-                return size;
-            }, function(newSize, oldSize, scope: repeatingNodeScope) {
-                scope.node.rx = newSize.x;
-                scope.node.ry = newSize.y;
+                scope.node.rx = Math.round(boundingRect.width);
+                scope.node.ry = Math.round(boundingRect.height);
             });
         }
     };
-}).directive("edge", function() {
+});
+
+angular.module("sparqlJs").directive("edge", function() {
     return {
         'restrict': 'A',
         'scope': {
-            'edge': '='
+            'edge': '=',
+            'highlight': '='
         },
-        'link': function(scope: repeatingLinkScope, element: JQuery) {
+        templateUrl: 'templates/edge.html',
+        'link': function(scope, element: JQuery) {
             var textElement = element.find('text')[0];
-
-            var size = {
-                x: 0,
-                y: 0
-            };
-
-            scope.$watch(function() {
+            scope.$watch('edge.text', function(newSize, oldSize, scope) {
                 var boundingRect = textElement.getBoundingClientRect();
-
-                var w = Math.round(boundingRect.width),
-                    h = Math.round(boundingRect.height);
-
-                if(size.x !== w || size.y !== h) {
-                    size = {
-                        x: w,
-                        y: h
-                    };
-                }
-
-                return size;
-            }, function(newSize, oldSize, scope: repeatingLinkScope) {
-                scope.edge.size = newSize;
+                scope.edge.size.x = Math.round(boundingRect.width);
+                scope.edge.size.y = Math.round(boundingRect.height);
             });
         }
     }

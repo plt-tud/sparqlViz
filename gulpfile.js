@@ -10,14 +10,13 @@ var paths = {
         "js/graphicalSPARQL/*.ts"
     ],
     libJS: [
+        "js/sparql-js/sparqljs-browser.js",
         "node_modules/socket.io-client/dist/socket.io.js",
         "node_modules/jquery/dist/jquery.min.js",
-        "node_modules/bootstrap/dist/js/bootstrap.min.js",
         "node_modules/angular/angular.min.js",
         "node_modules/angular-route/angular-route.min.js",
-        "node_modules/d3/d3.min.js",
-        "node_modules/ngstorage/ngStorage.js",
-        "node_modules/sparqljs/sparqljs-browser.js"
+        "node_modules/d3/build/d3.min.js",
+        "node_modules/ngstorage/ngStorage.js"
     ]
 };
 
@@ -27,6 +26,14 @@ gulp.task('browserify-sparqljs', function() {
             insertGlobals : true
         }))
         .pipe(gulp.dest('node_modules/sparqljs/'));
+});
+
+gulp.task('ts', function() {
+    return gulp.src(['./src/**/*.ts', 'typings/browser.d.ts'])
+        .pipe(typescript({
+            out: 'charting.js'
+        }))
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('appJS', function() {

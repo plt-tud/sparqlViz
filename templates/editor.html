@@ -28,8 +28,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="request in queries | orderBy:'-'" data-ng-click="selectQuery(request)" ng-class="{ active: request.isActive}">
-                <td><span class="label label-default">{{request.method}}</span> {{request.query | limitTo: 50 }} ...
+            <tr ng-repeat="request in queries | orderBy:'-'" ng-click="selectQuery(request)" ng-class="{ active: request.isActive}">
+                <td>
+                    <span class="label label-default">{{request.method}}</span>
+                    {{request.query | limitTo: truncateLength }}<span ng-if="request.query.length>truncateLength"> ...</span>
                 </td>
                 <td><em>{{request.time | date:'yyyy-MM-dd HH:mm:ss'}}</em></td>
                 <td>{{request.client}}</td>
@@ -44,50 +46,28 @@
                 <p><i class="fa fa-sitemap fa-fw"></i> Query: <code>{{selectedQuery.query}}</code></p>
                 <p>Date: <em>{{selectedQuery.time | date:'yyyy-MM-dd HH:mm:ss'}}</em></p>
                 <p>Client: {{selectedQuery.client}} -- {{selectedQuery.userAgent}}</p>
+                <input type="textarea" class="form-control" width="60" ng-model="selectedQuery.query">
+                <button class="btn form-control" data-ng-click="update()">Update</button>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body" id="queryGraph">
+                <div id="graph" class="col-sm-10">
                 <svg data-ng-mouseleave="dragNodeService.dragNode(null)"
-                     width="{{graphSize.width}}"
-                     height="{{graphSize.height}}"
+                     data-ng-attr-view_box="0 0 {{graphSize.width}} {{graphSize.height}}"
                      xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink">
+
                     <g id="sparql-js-graph-edges">
-                        <g class="edge"
-                           data-ng-repeat="edge in edges"
-                           transform="translate({{edge.getStartNode().getX()}}, {{edge.getStartNode().getY()}})"
-                           data-edge="edge"
-                           data-ng-class="{insert: edge.isInsert(), delete: edge.isDelete(), minus: edge.isMinus(), optional: edge.isOptional(), construct: edge.isConstruct(), unhighlighted: !highlightService.isHighlighted(edge)}">
-                            <path d="M0 0 Q{{edge.getCenterPoint()[0] - edge.getStartNode().getX()}} {{edge.getCenterPoint()[1] - edge.getStartNode().getY()}} {{edge.getEndNode().getX() - edge.getStartNode().getX()}},{{edge.getEndNode().getY() - edge.getStartNode().getY()}}"></path>
-                            <g transform="translate({{edge.getInterjectionPoint()[0] - edge.getStartNode().getX()}}, {{edge.getInterjectionPoint()[1] - edge.getStartNode().getY()}})">
-                                <polygon points="0,0,12,5,12,-5" transform="rotate({{edge.getInterjectionAngle()}})"
-                                         class="arrow-top"></polygon>
-                            </g>
-                            <g class="label"
-                               transform="translate({{(2 * edge.getCenterPoint()[0] + edge.getEndNode().getX() - 3 * edge.getStartNode().getX() - 2 * edge.size.x) / 4}},{{(2 * edge.getCenterPoint()[1] + edge.getEndNode().getY() - 3 * edge.getStartNode().getY() - 2 * edge.size.y) / 4}})">
-                                <rect height="{{edge.size.y}}" width="{{edge.size.x}}"></rect>
-                                <text data-ng-bind="edge.getName()" dy="{{3 * edge.size.y / 4}}"></text>
-                            </g>
-                        </g>
+                        <g data-ng-repeat="edge in edges" edge="edge" highlight="highlightService"></g>
                     </g>
                     <g id="sparql-js-graph-nodes">
-                        <g class="node"
-                           data-ng-repeat="node in nodes"
-                           data-node="node"
-                           transform="translate({{node.getX()}}, {{node.getY()}} )"
-                           data-ng-class="{select: node.isSelect(), unhighlighted: !highlightService.isHighlighted(node)}"
-                           data-ng-mousedown="dragNodeService.dragNode(node, $event)"
-                           data-ng-mousemove="dragNodeService.moveNode($event)"
-                           data-ng-mouseup="dragNodeService.dragNode(null)">
-                            <ellipse rx="{{node.getEllipseParameterX()}}"
-                                     ry="{{node.getEllipseParameterY()}}"></ellipse>
-                            <text data-ng-bind="node.getName()" dx="{{-node.rx/2}}" dy="{{node.ry/4}}"></text>
-                        </g>
+                        <g data-ng-repeat="node in nodes" node="node" highlight="highlightService"></g>
                     </g>
+
                     <g id="sparql-js-graph-sub-graphs">
                         <g class="sub-graph"
                            data-ng-repeat="subGraph in subGraphs"
-                           transform="translate({{subGraph.getNodeList()[0].getX() + subGraph.getNodeList()[0].getEllipseParameterX()}}, {{subGraph.getNodeList()[0].getY() - subGraph.getNodeList()[0].getEllipseParameterY() - 24}})"
+                           data-ng-attr-transform="translate({{subGraph.getNodeList()[0].getX() + subGraph.getNodeList()[0].getEllipseParameterX()}}, {{subGraph.getNodeList()[0].getY() - subGraph.getNodeList()[0].getEllipseParameterY() - 24}})"
                            data-ng-mouseover="highlightService.highlight(subGraph)"
                            data-ng-mouseleave="highlightService.highlight(null)"
                            data-ng-class="{unhighlighted: !highlightService.isHighlighted(subGraph)}">
@@ -98,7 +78,7 @@
                     <g id="sparql-js-graph-filters">
                         <g class="filter"
                            data-ng-repeat="filter in filters"
-                           transform="translate({{filter.getNodeList()[0].getX() + filter.getNodeList()[0].getEllipseParameterX()}}, {{filter.getNodeList()[0].getY() + filter.getNodeList()[0].getEllipseParameterY()}})"
+                           data-ng-attr-transform="translate({{filter.getNodeList()[0].getX() + filter.getNodeList()[0].getEllipseParameterX()}}, {{filter.getNodeList()[0].getY() + filter.getNodeList()[0].getEllipseParameterY()}})"
                            data-ng-mouseover="highlightService.highlight(filter)"
                            data-ng-mouseleave="highlightService.highlight(null)"
                            data-ng-class="{unhighlighted: !highlightService.isHighlighted(filter)}"
@@ -110,7 +90,7 @@
                     <g id="sparql-js-graph-binds">
                         <g class="bind"
                            data-ng-repeat="bind in binds"
-                           transform="translate({{bind.getNodeList()[0].getX() - bind.getNodeList()[0].getEllipseParameterX() - 20}}, {{bind.getNodeList()[0].getY() + bind.getNodeList()[0].getEllipseParameterY()}})"
+                           data-ng-attr-transform="translate({{bind.getNodeList()[0].getX() - bind.getNodeList()[0].getEllipseParameterX() - 20}}, {{bind.getNodeList()[0].getY() + bind.getNodeList()[0].getEllipseParameterY()}})"
                            data-ng-mouseover="highlightService.highlight(bind)"
                            data-ng-mouseleave="highlightService.highlight(null)"
                            data-ng-class="{unhighlighted: !highlightService.isHighlighted(bind)}"
@@ -121,7 +101,7 @@
                     <g id="sparql-js-graph-orders">
                         <g class="order"
                            data-ng-repeat="order in orders"
-                           transform="translate({{order.getNodeList()[0].getX() - order.getNodeList()[0].getEllipseParameterX() - 24}}, {{order.getNodeList()[0].getY() - order.getNodeList()[0].getEllipseParameterY() - 23}})"
+                           data-ng-attr-transform="translate({{order.getNodeList()[0].getX() - order.getNodeList()[0].getEllipseParameterX() - 24}}, {{order.getNodeList()[0].getY() - order.getNodeList()[0].getEllipseParameterY() - 23}})"
                            data-ng-mouseover="highlightService.highlight(order)"
                            data-ng-mouseleave="highlightService.highlight(null)"
                            data-ng-class="{unhighlighted: !highlightService.isHighlighted(order)}">
@@ -132,7 +112,7 @@
                     <g id="sparql-js-graph-services">
                         <g class="service"
                            data-ng-repeat="service in services"
-                           transform="translate({{service.getNodeList()[0].getX() - 13}}, {{service.getNodeList()[0].getY() + service.getNodeList()[0].getEllipseParameterY() + 3}})"
+                           data-ng-attr-transform="translate({{service.getNodeList()[0].getX() - 13}}, {{service.getNodeList()[0].getY() + service.getNodeList()[0].getEllipseParameterY() + 3}})"
                            data-ng-mouseover="highlightService.highlight(service)"
                            data-ng-mouseleave="highlightService.highlight(null)"
                            data-ng-class="{unhighlighted: !highlightService.isHighlighted(service)}">
@@ -141,6 +121,72 @@
                         </g>
                     </g>
                 </svg>
+                </div>
+                <div class="col-sm-2">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a>Graph ({{subGraphs.length}})<span class="fa arrow" data-ng-show="subGraphs.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="subGraph in subGraphs">
+                                    <a data-ng-bind="subGraph.getName()" data-ng-mouseover="highlightService.highlight(subGraph)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+
+                        <li id="union1">
+                            <a>Union ({{unions.length}})<span class="fa arrow" data-ng-show="unions.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="union in unions">
+                                    <a data-ng-bind="union.getName()" data-ng-mouseover="highlightService.highlight(union)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="filter1">
+                            <a>Filter ({{filters.length}})<span class="fa arrow" data-ng-show="filters.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="filter in filters">
+                                    <a data-ng-bind="filter.getText()" data-ng-mouseover="highlightService.highlight(filter)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="service1">
+                            <a>Service ({{services.length}})<span class="fa arrow" data-ng-show="services.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="service in services">
+                                    <a data-ng-bind="service.getName()" data-ng-mouseover="highlightService.highlight(service)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="bind1">
+                            <a>Bind ({{binds.length}})<span class="fa arrow" data-ng-show="binds.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="bind in binds">
+                                    <a data-ng-bind="bind.getText()" data-ng-mouseover="highlightService.highlight(bind)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="orderby1">
+                            <a>Order by ({{orders.length}})<span class="fa arrow" data-ng-show="orders.length > 0"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li data-ng-repeat="order in orders">
+                                    <a data-ng-bind="order.getText()" data-ng-mouseover="highlightService.highlight(order)"
+                                       data-ng-mouseleave="highlightService.highlight(null)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="limit">
+                            <a>Limit: {{limit}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
             </div>
             <!-- /.panel-body -->
         </div>

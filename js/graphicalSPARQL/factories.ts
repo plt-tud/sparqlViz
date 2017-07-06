@@ -1,12 +1,13 @@
 /// <reference path="../../node_modules/@types/jquery/index.d.ts" />
 /// <reference path="../../node_modules/@types/angular/index.d.ts" />
 /// <reference path="../../node_modules/@types/d3/index.d.ts" />
+/// <reference path="../../node_modules/@types/socket.io-client/index.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
 
 angular.module('sparqlJs').factory("config", function($localStorage, $location) {
 
     return $localStorage.$default({
-        sparqlLogProxyUrl: $location.protocol() + "://" + $location.host() + ":5060/queries"
+        sparqlLogProxyUrl: $location.protocol() + "://" + $location.host() + ":5060"
     });
 
 });
@@ -135,20 +136,20 @@ angular.module("sparqlJs").factory('highlightingService', [function()
     }
 }]).factory('dragNodeService', [function()
 {
-    var forceLayout: d3.layout.Force<d3.layout.force.Link<d3.layout.force.Node>, d3.layout.force.Node>;
+    var forceLayout: any;
     var dragNode: sparql.Node = null,
         positionOnStart: [number, number] = [0, 0],
         position: [number, number] = [0, 0];
 
     return {
-        setForceLayout(force: d3.layout.Force<d3.layout.force.Link<d3.layout.force.Node>, d3.layout.force.Node>) {
+        setForceLayout(force: any) {
             forceLayout = force;
         },
         dragNode(node: sparql.Node, event: JQueryEventObject) {
             if(node !== null)
             {
-                positionOnStart[0] = node.getX();
-                positionOnStart[1] = node.getY();
+                positionOnStart[0] = node.x;
+                positionOnStart[1] = node.y;
 
                 position[0] = event.pageX;
                 position[1] = event.pageY;
@@ -161,8 +162,6 @@ angular.module("sparqlJs").factory('highlightingService', [function()
             {
                 dragNode.x = positionOnStart[0] + event.pageX - position[0];
                 dragNode.y = positionOnStart[1] + event.pageY - position[1];
-
-                forceLayout.resume();
             }
         }
     }

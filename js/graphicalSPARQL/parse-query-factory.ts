@@ -1,21 +1,25 @@
 /// <reference path="../../node_modules/@types/jquery/index.d.ts" />
 /// <reference path="../../node_modules/@types/angular/index.d.ts" />
 /// <reference path="../../node_modules/@types/d3/index.d.ts" />
+/// <reference path="../sparql-js/sparqljs.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
+
+
 
 
 angular.module("sparqlJs").factory('parseQueryService', [function()
 {
     var parser = sparqljs.Parser();
+    var generator = sparqljs.Generator();
+    console.log(generator);
     var query: sparql.Query = null;
 
     var objectify = function(queryJson: sparqlJs.sparqlJsJson): sparql.Query {
         var object = new sparql.Query();
-        var generator = sparqljs.Generator();
+        var nodes: sparql.Node[] = [];
+        var subGraphs: sparql.SubGraph[] = [];
 
-        var nodes: sparql.Node[] = [], subGraphs: sparql.SubGraph[] = [];
-
-        var getGraph = function(name: string): sparql.SubGraph
+        function getGraph(name: string): sparql.SubGraph
         {
             if(!subGraphs.hasOwnProperty(name))
             {
@@ -25,7 +29,9 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
             }
 
             return subGraphs[name];
-        }, getNode = function(name: string, force = true): sparql.Node
+        }
+
+        function getNode(name, force = true): sparql.Node
         {
             if(!nodes.hasOwnProperty(name) && force)
             {
@@ -35,7 +41,9 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
             }
 
             return nodes[name] || null;
-        }, getEdges = function(name: string) {
+        }
+
+        function getEdges(name) {
             var edges = [];
 
             for(var edge of object.getEdgeList())
@@ -47,7 +55,7 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
             }
 
             return edges;
-        };
+        }
 
         var killPrefixes = function(string: string)
         {
@@ -125,46 +133,48 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
         {
             for(var updateWhereClause of where)
             {
+                const where = updateWhereClause as sparqlJs.sparqlJsWhere;
+                const pattern = updateWhereClause as sparqlJs.sparqlJsPattern;
                 switch(updateWhereClause.type)
                 {
                     case "group":
-                        addWhereClause(updateWhereClause.patterns, type, service, union);
+                        addWhereClause(where.patterns, type, service, union);
                         break;
                     case "graph":
-                        updateWhereClause['triples'] = updateWhereClause.patterns[0].triples;
+                        updateWhereClause['triples'] = where.patterns[0].triples;
                     case "bgp":
                         addEdge(updateWhereClause, type, service, union);
                         break;
                     case "minus":
-                        addWhereClause(updateWhereClause.patterns, sparql.EdgeType.MINUS, service, union);
+                        addWhereClause(where.patterns, sparql.EdgeType.MINUS, service, union);
                         break;
                     case "optional":
-                        addWhereClause(updateWhereClause.patterns, sparql.EdgeType.OPTIONAL, service, union);
+                        addWhereClause(where.patterns, sparql.EdgeType.OPTIONAL, service, union);
                         break;
                     case "service":
                         var newService = new sparql.Service(updateWhereClause.name);
-                        addWhereClause(updateWhereClause.patterns, type, newService, union);
+                        addWhereClause(where.patterns, type, newService, union);
                         object.addService(newService);
                         break;
                     case "union":
                         var newUnion = new sparql.Union("U" + (object.getUnionList().length + 1));
                         object.addUnion(newUnion);
-                        addWhereClause(updateWhereClause.patterns, type, service, newUnion);
+                        addWhereClause(where.patterns, type, service, newUnion);
                         break;
                     case "bind":
                         var bind = new sparql.Bind(generator.toPattern(updateWhereClause));
 
-                        bind.addNode(getNode(updateWhereClause.variable, false));
-                        bind.addEdge(getEdges(updateWhereClause.variable));
+                        bind.addNode(getNode(pattern.variable, false));
+                        bind.addEdge(getEdges(pattern.variable));
 
-                        if(typeof updateWhereClause.expression === "string")
+                        if(typeof pattern.expression === "string")
                         {
-                            bind.addNode(getNode(updateWhereClause.expression, false));
-                            bind.addEdge(getEdges(updateWhereClause.expression));
+                            bind.addNode(getNode(pattern.expression, false));
+                            bind.addEdge(getEdges(pattern.expression));
                         }
                         else
                         {
-                            for(var bindArg of updateWhereClause.expression.args)
+                            for(var bindArg of pattern.expression.args)
                             {
                                 bind.addNode(getNode(bindArg, false));
                                 bind.addEdge(getEdges(bindArg));
@@ -172,11 +182,17 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
                         }
 
                         object.addBind(bind);
+
                         break;
                     case "filter":
-                        var filter = new sparql.Filter(generator.toPattern(updateWhereClause));
 
-                        for(var filterArg of updateWhereClause.expression.args)
+                        console.log(generator)
+
+                        let str = generator.toPattern(pattern);
+                        console.log("str", str)
+                        var filter = new sparql.Filter(str);
+
+                        for(var filterArg of pattern.expression.args)
                         {
                             if(typeof filterArg === "object")
                             {
@@ -214,6 +230,7 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
 
                         object.addFilter(filter);
                 }
+
             }
         };
 
@@ -291,7 +308,10 @@ angular.module("sparqlJs").factory('parseQueryService', [function()
             if(newQuery !== undefined)
             {
                 try {
-                    query = objectify(parser.parse(newQuery));
+                    let query_ext = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+                        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                        "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" + newQuery;
+                    query = objectify(parser.parse(query_ext));
                 }
                 catch(e)
                 {

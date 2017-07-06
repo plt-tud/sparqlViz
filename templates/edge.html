@@ -1,0 +1,20 @@
+<g class="edge"
+   data-ng-attr-transform="translate({{edge.startNode.x}}, {{edge.startNode.y}})"
+   data-ng-class="{insert: edge.isInsert(), delete: edge.isDelete(), minus: edge.isMinus(), optional: edge.isOptional(), construct: edge.isConstruct(), unhighlighted: !highlight.isHighlighted(edge)}">
+    <path
+            ng-attr-d="M0 0 Q{{edge.centerPoint[0] - edge.startNode.x}} {{edge.centerPoint[1] - edge.startNode.y}} {{edge.endNode.x - edge.startNode.x}},{{edge.endNode.y - edge.startNode.y}}"
+    ></path>
+    <g ng-attr-transform="translate({{edge.getInterjectionPoint()[0] - edge.getStartNode().getX()}}, {{edge.getInterjectionPoint()[1] - edge.getStartNode().getY()}})">
+        <polygon points="0,0,12,5,12,-5"
+                 ng-attr-transform="rotate({{edge.getInterjectionAngle()}})"
+                 class="arrow-top"></polygon>
+    </g>
+    <g class="label"
+       ng-attr-transform="translate({{(2 * edge.getCenterPoint()[0] + edge.endNode.x - 3 * edge.startNode.x - 2 * edge.size.x) / 4}},{{(2 * edge.getCenterPoint()[1] + edge.endNode.y - 3 * edge.startNode.y - 2 * edge.size.y) / 4}})">
+        <rect
+                ng-attr-height="{{edge.size.y}}"
+                ng-attr-width="{{edge.size.x}}"></rect>
+        <text   data-ng-attr-dx="0"
+                data-ng-attr-dy="{{3 * edge.size.y / 4}}">{{edge.name}}</text>
+    </g>
+</g>

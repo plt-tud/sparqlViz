@@ -1,6 +1,6 @@
 /// <reference path="../../node_modules/@types/jquery/index.d.ts" />
 /// <reference path="../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../node_modules/@types/d3/index.d.ts" />
+/// <reference path="../../node_modules/@types/d3-force/index.d.ts" />
 /// <reference path="../graphicalSPARQL/classes.ts" />
 
 
@@ -8,7 +8,8 @@ angular.module('sparqlJs').controller('settingsController', function ($scope, $l
     $scope.config = config;
     $scope.$location = $location;
 });
-angular.module("sparqlJs").controller("graphController", function($scope: graphControllerScope, socket, highlightingService, dragNodeService, parseQueryService, $location, sparqlProxyService) {
+
+angular.module("sparqlJs").controller("graphController", function($scope, socket, highlightingService, dragNodeService, parseQueryService, $location, sparqlProxyService) {
     $scope.nodes = [];
     $scope.edges = [];
     $scope.subGraphs = [];
@@ -19,7 +20,8 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
     $scope.services = [];
     $scope.limit = Infinity;
     $scope.queries = sparqlProxyService.sparqlRequests;
-    $scope.selectedQuery = null;
+    $scope.selectedQuery = { query: "SELECT ?a WHERE { GRAPH <http://test.com> {?a ?b ?c. ?a rdfs:label ?d. ?d ?e ?c.} GRAPH <http://test.com/2> {?e ?b ?c. ?c ?e ?f.}}"};
+    $scope.truncateLength = 250;
 
     socket.on('request', function (data) {
         console.log("Message", data);
@@ -42,12 +44,14 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
         }
     };
 
+    $scope.update = function() {
+        parseQueryService.parse($scope.selectedQuery.query);
+    };
+
     sparqlProxyService.update();
 
     $scope.$watch("queries[0]", function(newVal, oldVal, scope){
-        console.log("hit")
         if (newVal && $scope.selectedQuery==null) {
-            console.log("new", newVal)
             $scope.selectQuery(newVal);
         }
     });
@@ -115,46 +119,26 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
             numberOfLinksList[posInList]++;
         }
 
-        $scope.graphSize = {height: 0, width: 0};
+        $scope.graphSize = {width: 900, height: 600};
 
 
-        $scope.graphSize.height = 600;
-        $scope.graphSize.width = 700;
+        var force = d3.forceSimulation()
+            //.size([$scope.graphSize.width, $scope.graphSize.height]);
 
-        var force = d3.layout.force()
-            .size([$scope.graphSize.width, $scope.graphSize.height]);
+        //force
+            .nodes($scope.nodes)
+            .force("center", d3.forceCenter($scope.graphSize.width/2,$scope.graphSize.height/2))
+            .force("charge", d3.forceManyBody().strength(-1))
+            .force("collide", d3.forceCollide().radius(100))
+            .force("link", d3.forceLink($scope.edges).strength(0.2))
+           // .force("container", d3.forceContainer([[0, 0],[$scope.graphSize.width, $scope.graphSize.height]]))
+            .on("tick", ticked)
+            .on("end", function() {console.log("simulation finished", $scope.edges, this.nodes())});
+        ;
 
-        force.nodes($scope.nodes)
-            .links($scope.edges)
-            .linkDistance(200)
-            .linkStrength(1)
-            .charge(30)
-            .gravity(0.5)
-            .start();
-
-        force.on('tick', function()
+        function ticked()
         {
-            for(var n of $scope.nodes)
-            {
-                if(n.getX() < n.getEllipseParameterX())
-                {
-                    n.x = n.getEllipseParameterX();
-                }
-                else if(n.getX() > ($scope.graphSize.width - n.getEllipseParameterX()))
-                {
-                    n.x = $scope.graphSize.width - n.getEllipseParameterX();
-                }
-
-                if(n.getY() < n.getEllipseParameterY())
-                {
-                    n.y = n.getEllipseParameterY();
-                }
-                else if(n.getY() > ($scope.graphSize.height - n.getEllipseParameterY()))
-                {
-                    n.y = $scope.graphSize.height - n.getEllipseParameterY();
-                }
-            }
-
+            //console.log("tick", $scope.nodes, $scope.edges)
             for(var e of $scope.edges)
             {
                 e.updateCenterPoint();
@@ -162,14 +146,16 @@ angular.module("sparqlJs").controller("graphController", function($scope: graphC
             }
 
             $scope.$apply();
-        });
-        dragNodeService.setForceLayout(force);
+        }
+        //dragNodeService.setForceLayout(force);
     });
 
     $scope.highlightService = highlightingService;
     $scope.dragNodeService = dragNodeService;
     $scope.parseQueryService = parseQueryService;
     $scope.$location = $location;
-}).controller('legendController', ['$scope', function($scope, $location) {
+});
+
+angular.module("sparqlJs").controller('legendController', ['$scope', function($scope, $location) {
     $scope.$location = $location;
 }]);

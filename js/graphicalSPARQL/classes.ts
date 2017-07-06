@@ -74,69 +74,69 @@ module sparql {
         /**
          * The edge's name
          */
-        private name: string;
+        name: string;
         /**
          * The node the edge starts at
          */
-        private startNode: Node;
+        startNode: Node;
         /**
          * The node the edge ends at
          */
-        private endNode: Node;
+        endNode: Node;
         /**
          * The edge's type
          * Tells whether the edge represents a insert-, delete-, minus- or a normal operation
          */
-        private type: EdgeType;
+        type: EdgeType;
         /**
          * The sub-graph the edge belongs to
          * Note that this can be null!
          */
-        private subGraph: SubGraph;
+        subGraph: SubGraph;
         /**
          * A list of all filters this edge belongs to
          * @type {Array}
          */
-        private filterList: Filter[] = [];
+        filterList: Filter[] = [];
         /**
          * A list of all binds this edge belongs to
          * @type {Array}
          */
-        private bindList: Bind[] = [];
+        bindList: Bind[] = [];
         /**
          * A list of all union-operations this edge belongs to
          * @type {Array}
          */
-        private unionList: Union[] = [];
+        unionList: Union[] = [];
         /**
          * A list of all order-by-statements this edge belongs to
          * @type {Array}
          */
-        private orderList: Order[] = [];
+        orderList: Order[] = [];
         /**
          * A list of all services this edge belongs to
          * @type {Array}
          */
-        private service: Service;
+        service: Service;
         /**
          * The edge-type
          */
-        private edgeType: GraphEdgeType = GraphEdgeType.LINEAR;
+        edgeType: GraphEdgeType = GraphEdgeType.LINEAR;
         /**
          * The center Point for the Bezier-curve
          * @type {number[]}
          */
-        private centerPoint: [number, number] = [0, 0];
+        centerPoint: [number, number] = [0, 0];
         /**
          * The interjection-point of the edge and the ellipse of the end-node
          * The third and fourth value represents the derivative of the curve in this point
          * @type {number[]}
          */
-        private interjectionPoint: [number, number, number, number] = [0, 0, 0, 0];
+        interjectionPoint: [number, number, number, number] = [0, 0, 0, 0];
         /**
          * size of the edge
          */
-        size: number;
+        size = {x:10, y:10};
         /**
          * the source-id in the node-list
          * this is used by d3
@@ -524,11 +524,11 @@ module sparql {
         /**
          * The ellipse-parameter a so that x^2 / a^2 + y^2 / b^2 = 1
          */
-        rx: number;
+        rx: number = 20;
         /**
          * The ellipse-parameter b so that x^2 / a^2 + y^2 / b^2 = 1
          */
-        ry: number;
+        ry: number = 10;
         /**
          * x-position of this node
          * This is set by d3 - do not change manually

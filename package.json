@@ -2,9 +2,8 @@
   "name": "sparqlViz",
   "version": "0.0.2",
   "scripts": {
-    "start": "gulp",
-    "build": "gulp build",
-    "server": "gulp production-server",
+    "start": "gulp watch",
+    "build": "gulp dist",
     "browserify": "browserify node_modules/sparqljs/sparql.js -s sparqljs -i fs -i path -i _process > node_modules/sparqljs/sparqljs-browser.js"
   },
   "devDependencies": {
@@ -19,10 +18,13 @@
     "@types/angular": "^1.6.18",
     "@types/angular-route": "^1.3.3",
     "@types/d3": "^4.9.0",
+    "@types/d3-force": "^1.0.7",
+    "@types/socket.io-client": "^1.4.29",
     "angular": "^1.6.4",
     "angular-route": "^1.6.4",
     "bootstrap": "^3.3.7",
-    "d3": "^3.5.9",
+    "d3": "^4.9.1",
+    "d3-force-container": "0.0.1",
     "gulp-concat": "^2.6.1",
     "jquery": "^3.2.1",
     "ngstorage": "^0.3.11",

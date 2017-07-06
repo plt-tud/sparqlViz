@@ -1,0 +1,13 @@
+<g class="node"
+   data-ng-attr-transform="translate({{node.x}}, {{node.y}} )"
+   data-ng-class="{select: node.isSelect(), unhighlighted: !highlight.isHighlighted(node)}"
+   data-ng-mousedown="dragNodeService.dragNode(node, $event)"
+   data-ng-mousemove="dragNodeService.moveNode($event)"
+   data-ng-mouseup="dragNodeService.dragNode(null)">
+    <ellipse cx="0" cy="0"
+             ng-attr-rx="{{node.rx}}"
+             ng-attr-ry="{{node.ry}}"></ellipse>
+    <text
+            ng-attr-dx="{{-node.rx/2}}"
+            ng-attr-dy="{{node.ry/4}}">{{node.name}}</text>
+</g>
